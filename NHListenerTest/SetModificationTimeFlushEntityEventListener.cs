@@ -6,7 +6,7 @@ using NHibernate.Event;
 
 namespace NHListenerTest
 {
-	public class SetModificationTimeFlushEntityEventListener : IFlushEntityEventListener
+	public class SetModificationTimeFlushEntityEventListener : IFlushEntityEventListener, ISaveOrUpdateEventListener
 	{
 		public SetModificationTimeFlushEntityEventListener()
 		{
@@ -37,6 +37,19 @@ namespace NHListenerTest
 			listeners.FlushEntityEventListeners = new IFlushEntityEventListener[] {this}
 				.Concat(listeners.FlushEntityEventListeners)
 				.ToArray();
+
+            listeners.SaveOrUpdateEventListeners = new ISaveOrUpdateEventListener[] { this }
+                .Concat(listeners.SaveOrUpdateEventListeners)
+                .ToArray();
+
+            listeners.SaveEventListeners = new ISaveOrUpdateEventListener[] { this }
+               .Concat(listeners.SaveEventListeners)
+               .ToArray();
 		}
+
+	    public void OnSaveOrUpdate(SaveOrUpdateEvent @event)
+	    {
+            SetModificationDateIfPossible(@event.Entity);
+	    }
 	}
 }

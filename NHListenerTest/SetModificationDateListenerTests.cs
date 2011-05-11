@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using log4net.Config;
+using log4net.Core;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
@@ -8,6 +11,27 @@ using Xunit;
 
 namespace NHListenerTest
 {
+    public class FakeAppender : log4net.Appender.IAppender
+    {
+        private static ICollection<string> commands = new List<string>();
+        public static ICollection<string> Commands { get { return commands; } }
+
+        public void Close()
+        { }
+
+        public void DoAppend(LoggingEvent loggingEvent)
+        {
+            Commands.Add(loggingEvent.RenderedMessage);
+        }
+
+        public static void Purge()
+        {
+            Commands.Clear();
+        }
+
+        public string Name { get; set; }
+    }
+
 	public class SetModificationDateIntegrationTests : IDisposable
 	{
 		private readonly ISessionFactory sessionFactory;
@@ -17,6 +41,7 @@ namespace NHListenerTest
 
 		public SetModificationDateIntegrationTests()
 		{
+		    XmlConfigurator.Configure();
 			listener =	new SetModificationTimeFlushEntityEventListener()
 				{
 					CurrentDateTimeProvider = () => defaultDate
@@ -55,6 +80,15 @@ namespace NHListenerTest
 			session.Dispose();
 			sessionFactory.Dispose();
 		}
+
+        [Fact]
+        public void Should_NotExecute_Superflous_Update()
+        {
+            var t = new Thing { Id = 1 };
+            session.Save(t);
+            session.Flush();
+            Assert.Equal(3, FakeAppender.Commands.Count);
+        }
 
 		[Fact]
 		public void LastModified_Should_BeSetOnInsert()

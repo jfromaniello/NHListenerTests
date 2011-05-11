@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,6 +37,10 @@
     </Reference>
     <Reference Include="FluentNHibernate">
       <HintPath>..\ExternalLib\FluentNHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\ExternalLib\NHibernate.dll</HintPath>
@@ -63,6 +68,9 @@
     <Compile Include="SetModificationTimeFlushEntityEventListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetModificationDateListenerTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

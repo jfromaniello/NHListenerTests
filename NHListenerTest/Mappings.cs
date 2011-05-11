@@ -14,6 +14,7 @@ namespace NHListenerTest
 			Map(x => x.LastModified);
 			HasMany(x => x.RelatedThings)
 				.Cascade.All()
+                .Inverse()
 				.Access.ReadOnlyPropertyThroughCamelCaseField();
 		}
 	}
