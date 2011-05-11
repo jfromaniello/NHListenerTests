@@ -84,6 +84,7 @@ namespace NHListenerTest
         [Fact]
         public void Should_NotExecute_Superflous_Update()
         {
+            FakeAppender.Purge();
             var t = new Thing { Id = 1 };
             session.Save(t);
             session.Flush();
